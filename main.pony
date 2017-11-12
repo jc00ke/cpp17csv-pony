@@ -1,4 +1,5 @@
 use "cli"
+use "files"
 
 actor Main
   """
@@ -12,8 +13,8 @@ actor Main
   Here is how to deal with edge cases:
 
   - if the input file is empty
-    [ ] the program should write “input file missing” to the console.
-    [ ] no output file generated
+    [x] the program should write “input file missing” to the console.
+    [x] no output file generated
   - if the input file does not contain the specified column
     [ ] the program should write “column name doesn’t exists in the input file” to the console.
     [ ] no output file generated
@@ -54,6 +55,18 @@ actor Main
     let value = cmd.arg("value").string()
     let output = cmd.arg("output").string()
 
+    try
+      let path = FilePath(env.root as AmbientAuth, input)?
+      match OpenFile(path)
+      | let file: File =>
+        env.out.print("File exists!")
+        return
+      else
+        env.out.print("Input file is missing")
+        env.exitcode(404)
+        return
+      end
+    end
     env.out.print(input)
     env.out.print(column)
     env.out.print(value)
