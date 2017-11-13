@@ -1,8 +1,13 @@
 BINARY_NAME=cpp17csv
 COMPILER=ponyc
 
-all:
+all: compile
+
+compile:
 	$(COMPILER)
+
+test: compile
+	./test.sh
 
 .PHONY: clean
 
