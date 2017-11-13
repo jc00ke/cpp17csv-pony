@@ -57,6 +57,11 @@ actor Main
 
     try
       let path = FilePath(env.root as AmbientAuth, input)?
+      if not path.exists() then
+        env.out.print("Input file is missing")
+        env.exitcode(404)
+        return
+      end
       match OpenFile(path)
       | let file: File if file.size() == 0 =>
         env.out.print("Input file is empty")
@@ -67,8 +72,8 @@ actor Main
         let lines = FileLines(file)
         return
       else
-        env.out.print("Input file is missing")
-        env.exitcode(404)
+        env.out.print("Unknown error")
+        env.exitcode(500)
         return
       end
     end

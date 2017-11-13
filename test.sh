@@ -8,6 +8,8 @@ test_input_doesnt_exist() {
   if [ "Input file is missing" != "$output" ]
   then
     echo "${FUNCNAME[0]} failed"
+    echo "Expected: Input file is missing"
+    echo "Actual: $output"
     exit 1
   fi
 }
@@ -17,6 +19,8 @@ test_input_is_empty() {
   if [ "Input file is empty" != "$output" ]
   then
     echo "${FUNCNAME[0]} failed"
+    echo "Expected: Input file is empty"
+    echo "Actual: $output"
     exit 1
   fi
 }
