@@ -1,6 +1,6 @@
 # Expressive C++ 17 Coding Challenge, in Pony
 
-This is my first foray into Pony. Be gentle.
+This is my first foray into [Pony](https://www.ponylang.org/). Be gentle.
 
 ## Details on [the challenge](https://www.fluentcpp.com/2017/09/25/expressive-cpp17-coding-challenge/)
 
