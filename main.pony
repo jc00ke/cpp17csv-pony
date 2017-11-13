@@ -16,8 +16,8 @@ actor Main
     [x] the program should write “input file missing” to the console.
     [x] no output file generated
   - if the input file does not contain the specified column
-    [ ] the program should write “column name doesn’t exists in the input file” to the console.
-    [ ] no output file generated
+    [x] the program should write “column name doesn’t exists in the input file” to the console.
+    [x] no output file generated
   - if the program succeeds but there is already a file having the name specified for output
     [ ] the program should overwrite this file.
   """
@@ -62,14 +62,23 @@ actor Main
         env.exitcode(404)
         return
       end
+      """
+      Will the file be disposed of when using match?
+      https://github.com/ponylang/ponyc/blob/master/examples/files/files.pony
+      """
       match OpenFile(path)
       | let file: File if file.size() == 0 =>
         env.out.print("Input file is empty")
         env.exitcode(411)
         return
       | let file: File =>
-        env.out.print("File exists!")
-        let lines = FileLines(file)
+        if first_line_contains_column(file, column) then
+          env.out.print("First line contains: " + column)
+        else
+          env.out.print("Column name doesn't exist in the input file")
+          env.exitcode(412)
+          return
+        end
         return
       else
         env.out.print("Unknown error")
@@ -81,3 +90,12 @@ actor Main
     env.out.print(column)
     env.out.print(value)
     env.out.print(output)
+
+  fun first_line_contains_column(file: File, column: String): Bool =>
+    try
+      let line = file.line()?
+      let columns = line.split(",")
+      columns.contains(column)
+    else
+      false
+    end

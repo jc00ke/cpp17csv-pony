@@ -25,4 +25,18 @@ test_input_is_empty() {
   fi
 }
 
+test_headers_exclude_column() {
+  local expected="Column name doesn't exist in the input file"
+  local actual="$($__dir__/cpp17csv test-input.csv zebra v o)"
+  if [ "$expected" != "$actual" ]
+  then
+    echo "${FUNCNAME[0]} failed"
+    echo "Expected: $expected"
+    echo "Actual: $actual"
+    exit 1
+  fi
+}
+
 test_input_doesnt_exist
+test_input_is_empty
+test_headers_exclude_column
