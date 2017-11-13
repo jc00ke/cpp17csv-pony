@@ -1,3 +1,4 @@
+use "debug"
 use "cli"
 use "files"
 
@@ -72,10 +73,20 @@ actor Main
     env.out.print(output)
 
   fun first_line_contains_column(file: File, column: String): Bool =>
+    Debug.out(column)
     try
       let line = file.line()?
       let columns = line.split(",")
-      columns.contains(column)
+      Debug.out("Number of columns in file: " + columns.size().string())
+      Debug.out("Line: " + line.string())
+      let h = columns(3)?
+      Debug.out("column is h: " + (column is h).string())
+      Debug.out("column == h: " + (column == h).string())
+      let eqLambda = {(h: String, c: String): Bool => h == c}
+      let contains = columns.contains(column, eqLambda)
+      Debug.out("Contains: " + contains.string())
+      contains
     else
+      Debug.out("I hit the else :(")
       false
     end
