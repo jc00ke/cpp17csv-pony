@@ -2,6 +2,8 @@ use "debug"
 use "cli"
 use "files"
 
+type CsvIndex is (USize | None)
+
 actor Main
   new create(env: Env) =>
     let cs =
@@ -53,12 +55,13 @@ actor Main
         env.exitcode(411)
         return
       | let file: File =>
-        if first_line_contains_column(file, column) then
-          env.out.print("First line contains: " + column)
-        else
+        match index_of_header_column(file, column)
+        | None =>
           env.out.print("Column name doesn't exist in the input file")
           env.exitcode(412)
           return
+        | let index: USize =>
+          env.out.print("First line contains: " + column + " at " + index.string())
         end
         return
       else
@@ -72,13 +75,11 @@ actor Main
     env.out.print(value)
     env.out.print(output)
 
-  fun first_line_contains_column(file: File, column: String): Bool =>
-    Debug.out(column)
+  fun index_of_header_column(file: File, column: String): CsvIndex =>
     try
       let line = file.line()?
       let columns = line.split(",")
-      /*Default implemntation of contains uses `is` and not `==`*/
-      columns.contains(column, {(h: String, c: String): Bool => h == c})
+      columns.find(column)?
     else
-      false
+      None
     end
