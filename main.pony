@@ -2,7 +2,7 @@ use "debug"
 use "cli"
 use "files"
 
-type CsvIndex is (USize | None)
+type CsvIndex is ((USize, String) | None)
 
 actor Main
   new create(env: Env) =>
@@ -60,8 +60,19 @@ actor Main
           env.out.print("Column name doesn't exist in the input file")
           env.exitcode(412)
           return
-        | let index: USize =>
-          env.out.print("First line contains: " + column + " at " + index.string())
+        | (let index: USize, let header: String) =>
+          let output_path = FilePath(env.root as AmbientAuth, output)?
+          let lines = FileLines.create(file)
+          with file' = CreateFile(output_path) as File do
+            file'.print(header)
+            while lines.has_next() do
+              let line = lines.next()
+              var values = recover ref line.split(",") end
+              values.update(index, value)?
+              let new_line = ",".join(values.values()) as String
+              file'.print(new_line)
+            end
+          end
         end
         return
       else
@@ -77,10 +88,11 @@ actor Main
 
   fun index_of_header_column(file: File, column: String): CsvIndex =>
     try
-      let line = file.line()?
+      let line = recover val file.line()? end
       let columns = line.split(",")
       let p = {(l: String, r: String): Bool => l.eq(r)}
-      columns.find(column where predicate = p)?
+      let index = columns.find(column where predicate = p)?
+      (index, line)
     else
       None
     end
