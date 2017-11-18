@@ -79,7 +79,8 @@ actor Main
     try
       let line = file.line()?
       let columns = line.split(",")
-      columns.find(column)?
+      let p = {(l: String, r: String): Bool => l.eq(r)}
+      columns.find(column where predicate = p)?
     else
       None
     end
