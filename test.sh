@@ -33,6 +33,17 @@ test_successful_replacement() {
   rm "$filename"
 }
 
+test_output_overridden() {
+  local filename="$(generated_output_filename)"
+  cp test-input.csv "$filename"
+
+  $__dir__/cpp17csv test-input City London $filename
+
+  refute_file_same "test-input.csv" "$filename"
+
+  rm "$filename"
+}
+
 generated_output_filename() {
   echo "generated_${FUNCNAME[1]}.csv"
 }
@@ -44,6 +55,17 @@ assert_file_same() {
   if ! diff -w "$expected" "$actual"
   then
     echo "$actual is not the same as $expected"
+    exit 1
+  fi
+}
+
+assert_file_same() {
+  local expected="$1"
+  local actual="$2"
+
+  if diff -w "$expected" "$actual"
+  then
+    echo "$actual is the same as $expected"
     exit 1
   fi
 }
@@ -65,4 +87,4 @@ test_input_doesnt_exist
 test_input_is_empty
 test_headers_exclude_column
 test_successful_replacement
-#test_output_overridden
+test_output_overridden
