@@ -24,6 +24,30 @@ test_headers_exclude_column() {
   assert_equal "$expected" "$actual"
 }
 
+test_successful_replacement() {
+  local filename="$(generated_output_filename)"
+  local actual="$($__dir__/cpp17csv test-input.csv City London $filename)"
+
+  assert_file_same "test-output.csv" "$filename"
+
+  rm "$filename"
+}
+
+generated_output_filename() {
+  echo "generated_${FUNCNAME[1]}.csv"
+}
+
+assert_file_same() {
+  local expected="$1"
+  local actual="$2"
+
+  if ! diff -w "$expected" "$actual"
+  then
+    echo "$actual is not the same as $expected"
+    exit 1
+  fi
+}
+
 assert_equal() {
   local expected="$1"
   local actual="$2"
@@ -40,3 +64,5 @@ assert_equal() {
 test_input_doesnt_exist
 test_input_is_empty
 test_headers_exclude_column
+test_successful_replacement
+#test_output_overridden
