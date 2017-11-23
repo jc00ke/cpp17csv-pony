@@ -51,8 +51,7 @@ actor Main
       """
       match OpenFile(path)
       | let file: File if file.size() == 0 =>
-        env.out.print("Input file is empty")
-        env.exitcode(411)
+        handle_empty_file(env)
         return
       | let file: File =>
         match index_of_header_column(file, column)
@@ -81,6 +80,10 @@ actor Main
         return
       end
     end
+
+  fun handle_empty_file(env: Env) =>
+    env.out.print("Input file is empty")
+    env.exitcode(411)
 
   fun index_of_header_column(file: File, column: String): CsvIndex =>
     try
