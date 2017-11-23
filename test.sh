@@ -30,14 +30,14 @@ test_successful_replacement() {
 
   assert_file_same "test-output.csv" "$filename"
 
-  #rm "$filename"
+  rm "$filename"
 }
 
 test_output_overridden() {
   local filename="$(generated_output_filename)"
   cp test-input.csv "$filename"
 
-  $__dir__/cpp17csv test-input City London $filename
+  $__dir__/cpp17csv test-input.csv City London $filename
 
   refute_file_same "test-input.csv" "$filename"
 
@@ -59,13 +59,13 @@ assert_file_same() {
   fi
 }
 
-assert_file_same() {
+refute_file_same() {
   local expected="$1"
   local actual="$2"
 
-  if ! diff -w "$expected" "$actual"
+  if diff -w "$expected" "$actual" > /dev/null 2>&1
   then
-    echo "$actual is not the same as $expected"
+    echo "$actual is the same as $expected"
     exit 1
   fi
 }
