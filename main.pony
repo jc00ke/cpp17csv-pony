@@ -56,8 +56,7 @@ actor Main
       | let file: File =>
         match index_of_header_column(file, column)
         | None =>
-          env.out.print("Column name doesn't exist in the input file")
-          env.exitcode(412)
+          handle_missing_column(env)
           return
         | (let index: USize, let header: String) =>
           let output_path = FilePath(env.root as AmbientAuth, output)?
@@ -80,6 +79,10 @@ actor Main
         return
       end
     end
+
+  fun handle_missing_column(env: Env) =>
+    env.out.print("Column name doesn't exist in the input file")
+    env.exitcode(412)
 
   fun handle_empty_file(env: Env) =>
     env.out.print("Input file is empty")
