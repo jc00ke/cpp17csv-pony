@@ -3,6 +3,7 @@ use "cli"
 use "files"
 
 type CsvIndex is ((USize, String) | None)
+type CsvExists is (FileExists | None)
 
 actor Main
   new create(env: Env) =>
@@ -40,10 +41,9 @@ actor Main
 
     try
       let path = FilePath(env.root as AmbientAuth, input)?
-      if not path.exists() then
-        env.out.print("Input file is missing")
-        env.exitcode(404)
-        return
+
+      match handle_missing_input(env, path, input)
+      | None => return
       end
       """
       Will the file be disposed of when using match?
@@ -64,6 +64,15 @@ actor Main
         env.exitcode(500)
       end
     end
+
+  fun handle_missing_input(env: Env, path: FilePath, input: String) : CsvExists =>
+    if not path.exists() then
+      env.out.print("Input file is missing")
+      env.exitcode(404)
+      return None
+    end
+    FileExists
+
 
   fun write_output_file(file: File, index: USize, header: String, env: Env, value: String, output: String) ? =>
     let output_path = FilePath(env.root as AmbientAuth, output)?
