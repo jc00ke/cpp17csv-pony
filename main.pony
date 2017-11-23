@@ -53,16 +53,19 @@ actor Main
       | let file: File if file.size() == 0 =>
         handle_empty_file(env)
       | let file: File =>
-        match index_of_header_column(file, column)
-        | None =>
-          handle_missing_column(env)
-        | (let index: USize, let header: String) =>
-          write_output_file(file, index, header, env, value, output)?
-        end
+        handle_csv(file, column, env, value, output)?
       else
         env.out.print("Unknown error")
         env.exitcode(500)
       end
+    end
+
+  fun handle_csv(file: File, column: String, env: Env, value: String, output: String) ? =>
+    match index_of_header_column(file, column)
+    | None =>
+      handle_missing_column(env)
+    | (let index: USize, let header: String) =>
+      write_output_file(file, index, header, env, value, output)?
     end
 
   fun handle_missing_input(env: Env, path: FilePath, input: String) : CsvExists =>
