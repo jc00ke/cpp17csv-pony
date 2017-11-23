@@ -59,24 +59,27 @@ actor Main
           handle_missing_column(env)
           return
         | (let index: USize, let header: String) =>
-          let output_path = FilePath(env.root as AmbientAuth, output)?
-          let lines = FileLines.create(file)
-          with file' = CreateFile(output_path) as File do
-            file'.print(header)
-            while lines.has_next() do
-              let line = lines.next()
-              var values = recover ref line.split(",") end
-              values.update(index, value)?
-              let new_line = ",".join(values.values()) as String
-              file'.print(new_line)
-            end
-          end
+          write_output_file(file, index, header, env, value, output)?
         end
         return
       else
         env.out.print("Unknown error")
         env.exitcode(500)
         return
+      end
+    end
+
+  fun write_output_file(file: File, index: USize, header: String, env: Env, value: String, output: String) ? =>
+    let output_path = FilePath(env.root as AmbientAuth, output)?
+    let lines = FileLines.create(file)
+    with file' = CreateFile(output_path) as File do
+      file'.print(header)
+      while lines.has_next() do
+        let line = lines.next()
+        var values = recover ref line.split(",") end
+        values.update(index, value)?
+        let new_line = ",".join(values.values()) as String
+        file'.print(new_line)
       end
     end
 
