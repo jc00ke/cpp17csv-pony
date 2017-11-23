@@ -52,20 +52,16 @@ actor Main
       match OpenFile(path)
       | let file: File if file.size() == 0 =>
         handle_empty_file(env)
-        return
       | let file: File =>
         match index_of_header_column(file, column)
         | None =>
           handle_missing_column(env)
-          return
         | (let index: USize, let header: String) =>
           write_output_file(file, index, header, env, value, output)?
         end
-        return
       else
         env.out.print("Unknown error")
         env.exitcode(500)
-        return
       end
     end
 
