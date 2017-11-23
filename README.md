@@ -23,7 +23,7 @@ This command line tool should accept the following arguments:
 - [x] no output file generated
 
 #### if the program succeeds but there is already a file having the name specified for output
-- [ ] the program should overwrite this file.
+- [x] the program should overwrite this file.
 
 ## Setup
 
