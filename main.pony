@@ -81,10 +81,6 @@ actor Main
         return
       end
     end
-    env.out.print(input)
-    env.out.print(column)
-    env.out.print(value)
-    env.out.print(output)
 
   fun index_of_header_column(file: File, column: String): CsvIndex =>
     try
