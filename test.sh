@@ -30,7 +30,7 @@ test_successful_replacement() {
 
   assert_file_same "test-output.csv" "$filename"
 
-  rm "$filename"
+  #rm "$filename"
 }
 
 test_output_overridden() {
@@ -63,9 +63,9 @@ assert_file_same() {
   local expected="$1"
   local actual="$2"
 
-  if diff -w "$expected" "$actual"
+  if ! diff -w "$expected" "$actual"
   then
-    echo "$actual is the same as $expected"
+    echo "$actual is not the same as $expected"
     exit 1
   fi
 }
