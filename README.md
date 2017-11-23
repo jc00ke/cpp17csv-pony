@@ -29,3 +29,7 @@ This command line tool should accept the following arguments:
 
 1. [Install Pony](https://github.com/ponylang/ponyc/blob/master/README.md#installation)
 1. `make test`
+
+## Running
+
+`> ./cpp17csv test-input City London output.csv`
